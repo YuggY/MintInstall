@@ -1,4 +1,5 @@
 #!/bin/bash +x
+# Help at https://community.linuxmint.com/tutorial/view/2026
 
 export LOCATION="sdc"
 export AES_SIZE="256"
@@ -37,7 +38,9 @@ sudo mkswap -L swap /dev/${LVM_NAME}/swap
 sudo mkfs.btrfs -L root /dev/${LVM_NAME}/root
 sudo mkfs.btrfs -L home /dev/${LVM_NAME}/home
 
-echo -e "Next -> Next -> Next -> Something Else -> Set MountPoints (Partitions are formated) -> Install Now ------> Continue Testing"
+echo -e "
+Next -> Next -> Next -> Something Else -> Set MountPoints (Partitions are formated) -> Install Now ------> Continue Testing
+"
 read -srn1 k
 
 sudo sh -c 'ubiquity -b gtk_ui'&
