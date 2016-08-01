@@ -35,13 +35,17 @@ sudo lvcreate -L ${LVM_ROOT} ${LVM_NAME} -n root
 sudo lvcreate -l +100%FREE   ${LVM_NAME} -n home
 
 sudo mkswap -L swap /dev/${LVM_NAME}/swap
-sudo mkfs.btrfs -L root /dev/${LVM_NAME}/root
-sudo mkfs.btrfs -L home /dev/${LVM_NAME}/home
 
 echo -e "
 NEXT STEPS:
 
-Continue -> Continue -> Something Else -> Set MountPoints (Partitions are formated) -> Install Now ------> Continue Testing
+Continue ->
+Continue ->
+     Something Else ->
+     Set MountPoints and Format the Partitions ->
+Install Now ------>
+
+[Continue Testing]
 "
 read -srn1 k
 
