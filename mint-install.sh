@@ -6,8 +6,21 @@ export LVM_NAME="lvm"
 export LVM_SWAP="3G"
 export LVM_ROOT="17G"
 
+clear
+echo -e "
+Current Config:
 
-# this will setup the partitions and start install
+  LOCATION=${LOCATION}
+  AES_SIZE=${AES_SIZE}
+  LVM_NAME=${LVM_NAME}
+  LVM_SWAP=${LVM_SWAP}
+  LVM_ROOT=${LVM_ROOT}
+"
+lsblk
+echo -e "
+Edit this file and CHECK that all the install suit your needs!
+"
+read -srn1 k
 
 sudo parted -s /dev/${LOCATION} mklabel msdos
 sudo parted -a optimal -s /dev/${LOCATION} mkpart primary 0% 100%
@@ -21,8 +34,8 @@ sudo lvcreate -L ${LVM_ROOT} ${LVM_NAME} -n root
 sudo lvcreate -l +100%FREE   ${LVM_NAME} -n home
 
 sudo mkswap -L swap /dev/${LVM_NAME}/swap
-sudo mkfs.btrfs -F /dev/${LVM_NAME}/root
-sudo mkfs.btrfs -F /dev/${LVM_NAME}/home
+sudo mkfs.btrfs -L root /dev/${LVM_NAME}/root
+sudo mkfs.btrfs -L home /dev/${LVM_NAME}/home
 
 echo -e "Next -> Next -> Next -> Something Else -> Set MountPoints (Partitions are formated) -> Install Now ------> Continue Testing"
 read -srn1 k
