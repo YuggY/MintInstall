@@ -39,7 +39,9 @@ sudo mkfs.btrfs -L root /dev/${LVM_NAME}/root
 sudo mkfs.btrfs -L home /dev/${LVM_NAME}/home
 
 echo -e "
-Next -> Next -> Next -> Something Else -> Set MountPoints (Partitions are formated) -> Install Now ------> Continue Testing
+NEXT STEPS:
+
+Continue -> Continue -> Something Else -> Set MountPoints (Partitions are formated) -> Install Now ------> Continue Testing
 "
 read -srn1 k
 
