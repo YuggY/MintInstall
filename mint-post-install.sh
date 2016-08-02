@@ -1,5 +1,7 @@
 #!/bin/bash +x
-# Help at https://community.linuxmint.com/tutorial/view/2026
+# Help a:       https://community.linuxmint.com/tutorial/view/2026
+# Download at:  sudo wget https://raw.githubusercontent.com/YuggY/MintInstall/master/mint-install.sh && sudo wget https://raw.githubusercontent.com/YuggY/MintInstall/master/mint-post-install.sh && sudo chmod +x mint*.sh
+
 
 export LOCATION="sdc"
 export AES_SIZE="256"
