@@ -44,17 +44,16 @@ echo "cp /.key \"\${DESTDIR}\"" | sudo tee -a ${MNT}/etc/initramfs-tools/hooks/c
 sudo chmod +x ${MNT}/etc/initramfs-tools/hooks/crypto_keyfile
 read -srn1 k
 
-#echo "lvm UUID=`sudo blkid -s UUID -o value /dev/${LOCATION}1` luks,keyscript=/bin/cat" | sudo tee -a ${MNT}/etc/crypttab
-echo "crypt UUID=`sudo blkid -s UUID -o value /dev/${LOCATION}1` luks,keyscript=/bin/cat" | sudo tee -a ${MNT}/etc/crypttab
-read -srn1 k
 
+export UUID=$(sudo blkid -s UUID -o value /dev/${LOCATION}1)
+echo "crypt UUID=${UUID} /.key luks,keyscript=/bin/cat" | sudo tee -a ${MNT}/etc/crypttab
 sudo chroot ${MNT} locale-gen --purge --no-archive
 sudo chroot ${MNT} update-initramfs -u
 read -srn1 k
 
 sudo sed -i.bak 's/GRUB_HIDDEN_TIMEOUT=0/#GRUB_HIDDEN_TIMEOUT=0/' ${MNT}/etc/default/grub
 sudo sed -i '10a GRUB_ENABLE_CRYPTODISK=y' ${MNT}/etc/default/grub
-sudo sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="cryptdevice=\/dev\/'"${LOCATION}"'1:crypt"/' ${MNT}/etc/default/grub
+sudo sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="cryptdevice=UUID=${UUID}:crypt"/' ${MNT}/etc/default/grub
 read -srn1 k
 
 sudo chroot ${MNT} update-grub
