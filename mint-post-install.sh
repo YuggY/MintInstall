@@ -22,41 +22,42 @@ Edit this file and CHECK that all the install suit your needs!
 "
 read -srn1 k
 
+export MNT="/mnt/@"
+
 sudo mount /dev/mapper/${LVM_NAME}-root /mnt
-sudo ln /mnt/@/* /mnt
 
-sudo mount --bind /dev                         /mnt/dev
-sudo mount --bind /dev/pts                     /mnt/dev/pts
-sudo mount --bind /sys                         /mnt/sys
-sudo mount --bind /proc                        /mnt/proc
-sudo mount --bind /run                         /mnt/run
+sudo mount --bind /dev                         ${MNT}/dev
+sudo mount --bind /dev/pts                     ${MNT}/dev/pts
+sudo mount --bind /sys                         ${MNT}/sys
+sudo mount --bind /proc                        ${MNT}/proc
+sudo mount --bind /run                         ${MNT}/run
 read -srn1 k
 
-sudo dd bs=1024 count=4 if=/dev/urandom of=/mnt/.key
-sudo chmod 000 /mnt/.key
-sudo chmod -R g-rwx,o-rwx /mnt/boot
-sudo cryptsetup luksAddKey /dev/${LOCATION}1 /mnt/.key
+sudo dd bs=1024 count=4 if=/dev/urandom of=${MNT}/.key
+sudo chmod 000 ${MNT}/.key
+sudo chmod -R g-rwx,o-rwx ${MNT}/boot
+sudo cryptsetup luksAddKey /dev/${LOCATION}1 ${MNT}/.key
 
-echo "cp /.key \"\${DESTDIR}\"" | sudo tee -a /mnt/etc/initramfs-tools/hooks/crypto_keyfile
-sudo chmod +x /mnt/etc/initramfs-tools/hooks/crypto_keyfile
+echo "cp /.key \"\${DESTDIR}\"" | sudo tee -a ${MNT}/etc/initramfs-tools/hooks/crypto_keyfile
+sudo chmod +x ${MNT}/etc/initramfs-tools/hooks/crypto_keyfile
 read -srn1 k
 
-#echo "lvm UUID=`sudo blkid -s UUID -o value /dev/${LOCATION}1` luks,keyscript=/bin/cat" | sudo tee -a /mnt/etc/crypttab
-echo "crypt UUID=`sudo blkid -s UUID -o value /dev/${LOCATION}1` luks,keyscript=/bin/cat" | sudo tee -a /mnt/etc/crypttab
+#echo "lvm UUID=`sudo blkid -s UUID -o value /dev/${LOCATION}1` luks,keyscript=/bin/cat" | sudo tee -a ${MNT}/etc/crypttab
+echo "crypt UUID=`sudo blkid -s UUID -o value /dev/${LOCATION}1` luks,keyscript=/bin/cat" | sudo tee -a ${MNT}/etc/crypttab
 read -srn1 k
 
-sudo chroot /mnt locale-gen --purge --no-archive
-sudo chroot /mnt update-initramfs -u
+sudo chroot ${MNT} locale-gen --purge --no-archive
+sudo chroot ${MNT} update-initramfs -u
 read -srn1 k
 
-sudo sed -i.bak 's/GRUB_HIDDEN_TIMEOUT=0/#GRUB_HIDDEN_TIMEOUT=0/' /mnt/etc/default/grub
-sudo sed -i '10a GRUB_ENABLE_CRYPTODISK=y' /mnt/etc/default/grub
-sudo sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="cryptdevice=\/dev\/'"${LOCATION}"'1:crypt"/' /mnt/etc/default/grub
+sudo sed -i.bak 's/GRUB_HIDDEN_TIMEOUT=0/#GRUB_HIDDEN_TIMEOUT=0/' ${MNT}/etc/default/grub
+sudo sed -i '10a GRUB_ENABLE_CRYPTODISK=y' ${MNT}/etc/default/grub
+sudo sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="cryptdevice=\/dev\/'"${LOCATION}"'1:crypt"/' ${MNT}/etc/default/grub
 read -srn1 k
 
-sudo chroot /mnt update-grub
-sudo chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-sudo chroot /mnt grub-install /dev/${LOCATION}
+sudo chroot ${MNT} update-grub
+sudo chroot ${MNT} grub-mkconfig -o /boot/grub/grub.cfg
+sudo chroot ${MNT} grub-install /dev/${LOCATION}
 read -srn1 k
 
-sudo umount /mnt/proc /mnt/dev/pts /mnt/dev /mnt/sys /mnt/run /mnt
+sudo umount ${MNT}/proc ${MNT}/dev/pts ${MNT}/dev ${MNT}/sys ${MNT}/run /mnt
