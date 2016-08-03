@@ -40,14 +40,19 @@ sudo mkswap -L swap /dev/${LVM_NAME}/swap
 echo -e "
 NEXT STEPS:
 
+PLEASE WAIT - Installer will open shortly
+
 Continue ->
 Continue ->
      Something Else ->
      Set MountPoints and Format the Partitions ->
-Install Now ------>
+     Install Now ->
+Continue ->
+Continue ->
+
+...Instalation...
 
 [Continue Testing]
 "
-read -srn1 k
 
 sudo sh -c 'ubiquity -b gtk_ui'&
